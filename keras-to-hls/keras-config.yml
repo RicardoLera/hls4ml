@@ -1,7 +1,7 @@
-KerasJson: example-keras-model-files/KERAS_3layer.json
-KerasH5:   example-keras-model-files/KERAS_3layer_weights.h5
-OutputDir: my-hls-test
-ProjectName: myproject
+KerasJson: my-model-files/lenet5_model.json
+KerasH5:   my-model-files/lenet5_weights.h5
+OutputDir: my-hls-lenet5
+ProjectName: lenet5
 XilinxPart: xcku115-flvb2104-2-i
 ClockPeriod: 5
 

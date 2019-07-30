@@ -117,7 +117,7 @@ void conv_2d(
     #pragma HLS function_instantiate variable=weights,biases
 
     // Parallel mode
-    #pragma HLS PIPELINE
+
     #pragma HLS ARRAY_PARTITION variable=biases complete dim=0
 
     // Limit multipliers to control parallelization
@@ -168,7 +168,7 @@ void conv_2d(
     for(int oh = 0; oh < CONFIG_T::out_height; oh++) {
         for(int ow = 0; ow < CONFIG_T::out_width; ow++) {
             for(int ff = 0; ff < CONFIG_T::n_filt; ff++) {
-                acc[oh*CONFIG_T::out_width*CONFIG_T::n_filt + ow*CONFIG_T::n_filt + ff]=biases[ff];
+    		    acc[oh*CONFIG_T::out_width*CONFIG_T::n_filt + ow*CONFIG_T::n_filt + ff]=biases[ff];
             }
         }
     }
@@ -182,7 +182,6 @@ void conv_2d(
                 AccumChan: for(int cc = 0; cc < CONFIG_T::n_chan; cc++){
                     AccumDotHeight: for(int fh = 0; fh < CONFIG_T::filt_height; fh++){
                         AccumDotWidth: for(int fw = 0; fw < CONFIG_T::filt_width; fw++){
-
                             int index_mult = oh*CONFIG_T::out_width*CONFIG_T::n_filt*CONFIG_T::n_chan*CONFIG_T::filt_height*CONFIG_T::filt_width
                                            + ow*CONFIG_T::n_filt*CONFIG_T::n_chan*CONFIG_T::filt_height*CONFIG_T::filt_width
                                                 + ff*CONFIG_T::n_chan*CONFIG_T::filt_height*CONFIG_T::filt_width
@@ -208,6 +207,7 @@ void conv_2d(
               for(int ff = 0; ff < CONFIG_T::n_filt; ff++) {
                 int index = oh*CONFIG_T::out_width*CONFIG_T::n_filt + ow*CONFIG_T::n_filt + ff;
                 res[index] = (res_T)(acc[index]);
+		
             }
         }
     }

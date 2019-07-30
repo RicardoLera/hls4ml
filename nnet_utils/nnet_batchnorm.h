@@ -61,7 +61,6 @@ void normalize(
         // For parallel inputs:
         //   - completely partition arrays -- target fabric
         //   - if we have an unroll factor, limit number of multipliers
-        #pragma HLS PIPELINE II=CONFIG_T::reuse_factor
 
         // #pragma HLS ARRAY_PARTITION variable=weights complete // remove this line for now, it breaks compression sometimes
         #pragma HLS ARRAY_PARTITION variable=scale complete
@@ -73,15 +72,13 @@ void normalize(
     } else if (CONFIG_T::io_type == io_serial) {
         #pragma HLS ARRAY_RESHAPE variable=scale complete dim=1
         #pragma HLS ARRAY_RESHAPE variable=bias complete dim=1
-        #pragma HLS DATAFLOW
+
     }            
 
     // Calcuate result
     Result: for (int ires = 0; ires < CONFIG_T::n_in; ires++) {
         if (CONFIG_T::io_type == io_serial){
-            #pragma HLS UNROLL
-            #pragma HLS PIPELINE
-        }
+            }
         
         if (CONFIG_T::n_filt==-1) {
             res[ires] = data[ires] * scale[ires] + bias[ires];

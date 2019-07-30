@@ -63,7 +63,6 @@ void dense(
         // For parallel inputs:
         //   - completely partition arrays -- target fabric
         //   - if we have an unroll factor, limit number of multipliers
-        #pragma HLS PIPELINE II=CONFIG_T::reuse_factor
 
         // #pragma HLS ARRAY_PARTITION variable=weights complete // remove this line for now, it breaks compression sometimes
         #pragma HLS ARRAY_PARTITION variable=biases complete
@@ -85,8 +84,7 @@ void dense(
         #pragma HLS ARRAY_PARTITION variable=weights cyclic factor=cycle_factor
         #pragma HLS ARRAY_PARTITION variable=mult cyclic factor=cycle_factor
         #pragma HLS ARRAY_PARTITION variable=acc complete
-        #pragma HLS DATAFLOW
-        #pragma HLS STREAM variable=mult depth=1
+            #pragma HLS STREAM variable=mult depth=1
         #pragma HLS STREAM variable=acc depth=1
         if (CONFIG_T::store_weights_in_bram){
             #pragma HLS RESOURCE variable=weights core=ROM_2P_BRAM
@@ -96,7 +94,6 @@ void dense(
     // Do the matrix-multiply
     Product1: for(int ii = 0; ii < CONFIG_T::n_in; ii++) {
         if (CONFIG_T::io_type == io_serial){
-            #pragma HLS PIPELINE
         }
         cache = data[ii];
         Product2: for(int jj = 0; jj < CONFIG_T::n_out; jj++) {
@@ -112,7 +109,6 @@ void dense(
     // Initialize accumulator with input biases
     ResetAccum: for(int iacc = 0; iacc < CONFIG_T::n_out; iacc++) {
         if (CONFIG_T::io_type == io_serial){
-            #pragma HLS UNROLL
         }
         acc[iacc] = (typename CONFIG_T::accum_t) biases[iacc];
     }
@@ -120,7 +116,6 @@ void dense(
     // Accumulate multiplication result
     Accum1: for(int ii = 0; ii < CONFIG_T::n_in; ii++) {
         if (CONFIG_T::io_type == io_serial){
-            #pragma HLS PIPELINE
         }
         Accum2: for(int jj = 0; jj < CONFIG_T::n_out; jj++) {
         int index = ii*CONFIG_T::n_out+jj;
@@ -131,7 +126,6 @@ void dense(
     // Cast to "res_t" type
     Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
         if (CONFIG_T::io_type == io_serial){
-            #pragma HLS UNROLL
         }
         res[ires] = (res_T) (acc[ires]);
     }

@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import numpy as np
 import h5py
 import os
@@ -160,7 +160,7 @@ def main():
             layer['inputs'] = [ inputs_map.get(inp[0], inp[0]) for inp in keras_layer['inbound_nodes'][0] ]
 
         #Extract type of activation and number of nodes
-        for config,config_value in keras_layer["config"].items():
+        for config,config_value in list(keras_layer["config"].items()):
             if(config=="activation"):
                 layer['activation']=config_value
             if(config=="epsilon"):

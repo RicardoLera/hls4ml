@@ -101,8 +101,7 @@ void conv_1d(
     #pragma HLS function_instantiate variable=weights,biases
 
     // Parallel mode
-    #pragma HLS PIPELINE
-    #pragma HLS ARRAY_PARTITION variable=biases complete dim=0
+      #pragma HLS ARRAY_PARTITION variable=biases complete dim=0
 
     // Limit multipliers to control parallelization
     const int multiplier_limit = compute_multiplier_limit<CONFIG_T>(weights);

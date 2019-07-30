@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import tarfile
 import yaml
 from shutil import copyfile
@@ -196,7 +196,7 @@ def write_parameters(model):
             for layer in model.get_layers():
                 layer_precision = layer.get_layer_precision()
                 all_precision.update(layer_precision)
-            for type_name, precision in all_precision.items():
+            for type_name, precision in list(all_precision.items()):
                 newline += 'typedef {precision} {type_name};\n'.format(type_name=type_name, precision=precision)
 
         elif "//hls-fpga-machine-learning insert layer-config" in line:
